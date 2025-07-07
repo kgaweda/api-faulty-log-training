@@ -2,8 +2,16 @@ from flask import Flask, jsonify, request
 import logging
 import random
 import time
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+
+error_counter = Counter(
+    'flask_api_errors_total',
+    'Total number of internal server errors (500)'
+)
 
 
 logging.basicConfig(
@@ -19,6 +27,7 @@ def health():
 def get_data():
     if random.random() < 0.2:
         app.logger.error("Random internal server error occurred.")
+        error_counter.inc()
         return jsonify(error="Internal Server Error"), 500
 
     app.logger.info("Returning dummy data")

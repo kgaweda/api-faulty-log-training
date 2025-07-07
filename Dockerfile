@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY app.py .
 
-RUN pip install Flask gunicorn
+RUN pip install Flask prometheus_flask_exporter prometheus_client gunicorn
 
 EXPOSE 8080
 
